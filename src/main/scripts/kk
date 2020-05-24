@@ -65,14 +65,14 @@ if arguments['-w']:
 kk = KubeObjects()
 
 if arguments['get'] and ( arguments['pn'] or arguments['podnode'] ):
-
     while True: 
-        kk.refresh(use_cache = True)
+        kk.refresh(use_cache = False)
         pod_nodes =    kk.pod_nodes(pod_label_selector = pod_label_selector,
                                     pod_field_selector = field_selector,
                                     exclude = exclude)
         Utils.clear()  
-                                            
+        Utils.print_preety(None, True, *output) #headers
+
         for pn in pod_nodes:
             Utils.print_preety(pn, False, *output)
         if not watch:

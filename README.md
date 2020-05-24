@@ -4,11 +4,13 @@ I am everything kubectl lacks (for sajid)
 ----------------------------
 *my python learning by `doing something useful` project
 
+(the basic concept here is joining the node data with the pod data (podnode object = {'pod': object, 'node': object}) and then searching / formatting output of the joined columns)
+
 ```
 (venv) ➜  kk git:(master) ✗ kk -h
 k(kubectl)++ ... only better
 Usage:
-kk get (podnode|pn) [options]
+kk get (podnode|pn) [options] 
 
 Options:
     -h --help    show this
@@ -60,6 +62,10 @@ streamtech-pgadmin-dd7899d86-5lwl5                                Running       
 commerce-martian-auth0-service-59bdbf9967-85shw                   Running             ondemand            commerce            ip-10-100-83-22    {'cpu': '2', 'memory': '8Gi'}          {'cpu': '6', 'memory': '8Gi'}
 commerce-martian-auth0-service-59bdbf9967-8qd29                   Running             ondemand            commerce            ip-10-100-103-2    {'cpu': '2', 'memory': '8Gi'}          {'cpu': '6', 'memory': '8Gi'}
 
+```
+
+```
+kk get podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:35,pod.spec.containers[0].resources.limits:35,pod.status.container_statuses[0].restart_count' | sort -k3
 ```
 
 

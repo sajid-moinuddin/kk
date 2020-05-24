@@ -23,13 +23,13 @@ kk.refresh(use_cache = True)
 
 # kiam_pod = kk.get_pod(label_selector = 'app=streamtech-ibms-service/streamtech-cdn-selection-service', field_selector = 'metadata.namespace=streamtech/content/commerce')
 
-pods = kk.get_pod(field_selector='metadata.owner_references[0].kind=DaemonSet')
+pods = kk.get_pod(exclude='metadata.owner_references[0].kind=DaemonSet')
 print(len(pods))
 
 for kp in pods:
     Utils.print_preety(kp, False, 'metadata.name:60', 'metadata.namespace')
     print(_.get(kp, 'metadata.owner_references[0].kind'))
-    print(_.get(kp, 'metadata.labels.genre'))
+    print(_.get(kp, 'status.container_statuses[0].restart_count'))
 
 # pod_nodes = kk.pod_nodes( pod_label_selector = 'app=streamtech-ibms-service/streamtech-cdn-selection-service', field_selector = 'metadata.namespace=streamtech/content/commerce')
 
