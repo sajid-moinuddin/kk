@@ -90,8 +90,8 @@ class KubeObjects:
                                     field_selector=field_selector), self.all_pods))
         return to_return
 
-    def get_pod(self, pod_name = None, label_selector = None, field_selector = None):
-        pods = self.filter_pod(label_selector = label_selector, field_selector=field_selector)
+    def get_pod(self, pod_name = None, label_selector = None, field_selector = None, exclude = None):
+        pods = self.filter_pod(label_selector = label_selector, field_selector=field_selector, exclude= exclude)
         to_ret = []
         if pod_name is not None:
             for p in pods:
@@ -115,18 +115,19 @@ class KubeObjects:
 
         if field_selector is not None:
             field_key, field_value = Utils.parse_key_val(field_selector)
-            if not _.get(k8s_object, field_key) in field_value:
+            if not _.get(k8s_object, field_key) or not _.get(k8s_object, field_key) in field_value:
                 return False
 
         return True
 
-    def pod_nodes(self, pod_label_selector = None, node_label_selector = None, exclude = None):
+    def pod_nodes(self, pod_label_selector = None, node_label_selector = None, field_selector = None, exclude = None):
         pod_nodes = []
         for pod in self.all_pods:
             pod_node = self.pod_node(pod)
 
-            pod_match = self.is_match(pod, pod_label_selector, exclude)
-            node_match = self.is_match(pod_node, node_label_selector, exclude)
+            pod_match = self.is_match(pod, label_selector=pod_label_selector, exclude=exclude, field_selector=field_selector)
+            node_match = self.is_match(pod_node, label_selector=node_label_selector, exclude=exclude, field_selector=field_selector)
+
             if pod_match or node_match:    
                 pod_nodes.append({'namespace': pod.metadata.namespace, 
                                     'pod_name': self.name(pod), 

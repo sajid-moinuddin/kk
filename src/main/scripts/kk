@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 
-"""
-Night gathers, and now my watch begins.
-
+"""k(kubectl)++ ... only better
 Usage:
-watchman watch [options]
-watchman show pods [options]
-watchman show scaling [options]
+kk get (podnode|pn) [options]
 
 Options:
--v --verbose                 be more verbose
---vector-id STRING           if you want vector to create a scene
---version                    show version
--l STRING                    label selector
--w                           watch mode
+    -h --help    show this
+    -l STRING    label selector
+    -f STRING    field selector
+    -e STRING    exclude
+    -o output    pydash format plus padding info, ie. node.metadata.name:62
+    -w           watch mode
 """
 
 """
@@ -27,5 +24,13 @@ import logging
 import sys
 import logging
 from docopt import docopt
-arguments = docopt(__doc__, version='${version}')
+arguments = docopt(__doc__, version='${version}', help=True)
 
+#src/main/scripts/kk get pn \
+#                       -l 'app=streamtech-ibms-service/streamtech-cdn-selection-service' \
+#                       -f 'metadata.namespace=streamtech/content/commerce' \
+#                       -e 'metadata.owner_references[0].kind=DaemonSet'
+#                       -o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62'
+#                       -w 
+
+print(arguments)

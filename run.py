@@ -21,12 +21,50 @@ kk.refresh(use_cache = True)
 #     # Utils.print_preety(pn, 'pod_name:70', 'app_name:50', 'namespace', 'pod_state', 'node_group', 'node_lifecycle')
 #     Utils.print_preety(pn, 'pod.metadata.name:70', 'node.metadata.name:70')
 
-kiam_pod = kk.get_pod() #kk.get_pod(field_selector = 'metadata.namespace=streamtech/content/commerce')
+# kiam_pod = kk.get_pod(label_selector = 'app=streamtech-ibms-service/streamtech-cdn-selection-service', field_selector = 'metadata.namespace=streamtech/content/commerce')
 
-for kp in kiam_pod:
-    # print(kp)
-    Utils.print_preety(kp, 'metadata.name:60', 'metadata.namespace')
-    break
+# pods = kk.get_pod(exclude='metadata.owner_references[0].kind=DaemonSet')
+# print(len(pods))
+
+# for kp in pods:
+#     Utils.print_preety(kp, 'metadata.name:60', 'metadata.namespace')
+#     print(_.get(kp, 'metadata.owner_references[0].kind'))
+#     print(_.get(kp, 'metadata.labels.genre'))
+
+pod_nodes = kk.pod_nodes(  field_selector='metadata.namespace=streamtech/content/commerce')
+
+for pn in pod_nodes:
+    Utils.print_preety(pn, 'pod_name:62', 'node.metadata.labels.lifecycle', 'namespace', 'node.metadata.name:62')
+    print(_.get(pn, 'node.metadata.labels.lifecycle'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # print(kiam_pod)
 # Utils.print_preety(kiam_pod, 'metadata.name:90')
 # print(_.get(kiam_pod, 'metadata'))
