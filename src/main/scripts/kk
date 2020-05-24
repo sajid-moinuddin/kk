@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+"""
+Night gathers, and now my watch begins.
+
+Usage:
+watchman watch [options]
+watchman show pods [options]
+watchman show scaling [options]
+
+Options:
+-v --verbose                 be more verbose
+--vector-id STRING           if you want vector to create a scene
+--version                    show version
+-l STRING                    label selector
+-w                           watch mode
+"""
+
+"""
+pyb publish
+pip install .tar.gz
+runMyScript.py
+uninstall
+"""
+
+import logging
+import sys
+import logging
+from docopt import docopt
+arguments = docopt(__doc__, version='${version}')
+
