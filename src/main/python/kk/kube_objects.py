@@ -2,6 +2,8 @@ from kubernetes import config, client, watch
 import time
 import json
 import pickle
+import pydash as _
+from kk.utils import Utils
 # import only system from os 
 from os import system, name 
 
@@ -80,37 +82,62 @@ class KubeObjects:
         else:
             return None
     
-    def filter_pod(self, label_selector = None):
-        if label_selector is None:
-            return self.all_pods
-        
-        label_key, label_value = Utils.parse_key_val(label_selector)
+    def filter_pod(self, label_selector = None, exclude = None, field_selector = None):
+        to_return = list(filter(lambda o: 
+                                self.is_match(o, 
+                                    label_selector=label_selector, 
+                                    exclude=exclude, 
+                                    field_selector=field_selector), self.all_pods))
+        return to_return
+
+    def get_pod(self, pod_name = None, label_selector = None, field_selector = None):
+        pods = self.filter_pod(label_selector = label_selector, field_selector=field_selector)
         to_ret = []
-        for pod in self.all_pods:
-            if self.label(pod, label_key) == label_value :
-                to_ret.append(pod)
-        return to_ret                
-
-    def get_pod(self, pod_name = None, label_selector = None):
-        pods = self.filter_pod(label_selector)
-
         if pod_name is not None:
-            for p in self.all_pods:
-                if pod_name == self.name(p):
-                    return p
-        return pods
+            for p in pods:
+                if pod_name in self.name(p):
+                    to_ret.append(p)
+        else:
+            to_ret = pods
+        return to_ret
 
-    def pod_nodes(self, label_selector = None):
+    @staticmethod
+    def is_match(k8s_object, label_selector = None, exclude = None, field_selector = None):
+        if label_selector is not None:
+            label_key, label_value = Utils.parse_key_val(label_selector)
+            if not KubeObjects.label(k8s_object, label_key) or not KubeObjects.label(k8s_object, label_key) in label_value:
+                return False
+
+        if exclude is not None:
+            exclude_key, exclude_value = Utils.parse_key_val(exclude)
+            if _.get(k8s_object, exclude_key) == exclude_value:
+                return False
+
+        if field_selector is not None:
+            field_key, field_value = Utils.parse_key_val(field_selector)
+            if not _.get(k8s_object, field_key) in field_value:
+                return False
+
+        return True
+
+    def pod_nodes(self, pod_label_selector = None, node_label_selector = None, exclude = None):
         pod_nodes = []
-        for pod in self.filter_pod(label_selector):
+        for pod in self.all_pods:
             pod_node = self.pod_node(pod)
-            pod_nodes.append({'namespace': pod.metadata.namespace, 
-                                'pod_name': self.name(pod), 
-                                'pod_state':  pod.status.phase,
-                                'app_name': self.label(pod, 'app'),
-                                'node_name': self.name(pod_node), 
-                                'node_group' : self.node_group(pod_node), 
-                                'node_lifecycle': self.label(pod_node, 'lifecycle')})
+
+            pod_match = self.is_match(pod, pod_label_selector, exclude)
+            node_match = self.is_match(pod_node, node_label_selector, exclude)
+            if pod_match or node_match:    
+                pod_nodes.append({'namespace': pod.metadata.namespace, 
+                                    'pod_name': self.name(pod), 
+                                    'pod_state':  pod.status.phase,
+                                    'app_name': self.label(pod, 'app'),
+                                    'node_name': self.name(pod_node), 
+                                    'node_group' : self.node_group(pod_node), 
+                                    'node_lifecycle': self.label(pod_node, 'lifecycle'),
+                                    'pod':pod,
+                                    'node': pod_node
+                                    })
         pod_nodes.sort(key= lambda n: str(n['app_name']))
         return pod_nodes
         

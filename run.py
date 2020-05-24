@@ -16,18 +16,19 @@ kk = KubeObjects()
 
 kk.refresh(use_cache = True)
 
-pod_nodes = kk.pod_nodes()
-
+# pod_nodes = kk.pod_nodes()
 # for pn in pod_nodes:
-#     Utils.print_preety(pn, 'pod_name:70', 'app_name:50', 'namespace', 'pod_state', 'node_group', 'node_lifecycle')
+#     # Utils.print_preety(pn, 'pod_name:70', 'app_name:50', 'namespace', 'pod_state', 'node_group', 'node_lifecycle')
+#     Utils.print_preety(pn, 'pod.metadata.name:70', 'node.metadata.name:70')
 
-kiam_pod = kk.get_pod(pod_name = 'kiam-agent-9rscr')
+kiam_pod = kk.get_pod() #kk.get_pod(field_selector = 'metadata.namespace=streamtech/content/commerce')
 
-print(kiam_pod)
+for kp in kiam_pod:
+    # print(kp)
+    Utils.print_preety(kp, 'metadata.name:60', 'metadata.namespace')
+    break
+# print(kiam_pod)
+# Utils.print_preety(kiam_pod, 'metadata.name:90')
+# print(_.get(kiam_pod, 'metadata'))
 
-
-
-
-Utils.print_preety(kiam_pod, 'metadata.name:90')
-
-print(_.get(kiam_pod, 'metadata'))
+# kk.filter_pod(label_selector = '')
