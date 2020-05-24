@@ -11,6 +11,15 @@ Options:
     -e STRING    exclude
     -o output    pydash format plus padding info, ie. node.metadata.name:62
     -w           watch mode
+
+Example:
+#    kk get pn \\
+#    -l 'app=streamtech-ibms-service/streamtech-cdn-selection-service' \\
+#    -f 'metadata.namespace=streamtech/content/commerce' \\
+#    -e 'metadata.owner_references[0].kind=DaemonSet' \\
+#    -o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62' \\
+#    -w 
+
 """
 
 """
@@ -23,14 +32,54 @@ uninstall
 import logging
 import sys
 import logging
+import time
 from docopt import docopt
+from kk.kube_objects import KubeObjects
+from kk.utils import Utils
+
 arguments = docopt(__doc__, version='${version}', help=True)
 
-#src/main/scripts/kk get pn \
-#                       -l 'app=streamtech-ibms-service/streamtech-cdn-selection-service' \
-#                       -f 'metadata.namespace=streamtech/content/commerce' \
-#                       -e 'metadata.owner_references[0].kind=DaemonSet'
-#                       -o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62'
-#                       -w 
+pod_label_selector = None 
+node_label_selector = None
+field_selector = None
+exclude = None
+output = ['pod_name:62','namespace','pod_state','app_name','node_name:20','node_group','node_lifecycle']
+watch = False
 
-print(arguments)
+
+if arguments['-e']:
+    exclude = arguments['-e']
+
+if arguments['-l']:
+    pod_label_selector = arguments['-l']
+
+if arguments['-f']:
+    field_selector = arguments['-f']
+
+if arguments['-o']:
+    output = arguments['-o'].split(',')
+
+if arguments['-w']:
+    watch = True
+
+kk = KubeObjects()
+
+if arguments['get'] and ( arguments['pn'] or arguments['podnode'] ):
+
+    while True: 
+        kk.refresh(use_cache = True)
+        pod_nodes =    kk.pod_nodes(pod_label_selector = pod_label_selector,
+                                    pod_field_selector = field_selector,
+                                    exclude = exclude)
+        Utils.clear()  
+                                            
+        for pn in pod_nodes:
+            Utils.print_preety(pn, False, *output)
+        if not watch:
+            break
+        else:
+            time.sleep(5)
+
+# print(arguments)
+# print('-e: ' + exclude)
+# print('-l: ' + pod_label_selector)

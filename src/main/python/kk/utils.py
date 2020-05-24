@@ -17,7 +17,7 @@ class Utils:
             _ = system('clear')     
 
     @staticmethod
-    def print_preety(dict_object, *argv):
+    def print_preety(dict_object, header_only, *argv):
         pattern = ''
         vars = []
 
@@ -28,7 +28,11 @@ class Utils:
             if(':' in key_name):
                 key_name, size = Utils.parse_key_val(a, ':')
             pattern += '{:'+ str(int(size) + default_padding) + '.' + str(size) + '}'
-            vars.append(str(_.get(dict_object,key_name)))
+
+            if header_only:
+                vars.append(key_name)
+            else :
+                vars.append(str(_.get(dict_object,key_name)))
 
         print(pattern.format(*vars))
 

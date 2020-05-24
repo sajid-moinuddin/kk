@@ -110,7 +110,7 @@ class KubeObjects:
 
         if exclude is not None:
             exclude_key, exclude_value = Utils.parse_key_val(exclude)
-            if _.get(k8s_object, exclude_key) == exclude_value:
+            if str(_.get(k8s_object, exclude_key)) in exclude_value:
                 return False
 
         if field_selector is not None:
@@ -120,15 +120,16 @@ class KubeObjects:
 
         return True
 
-    def pod_nodes(self, pod_label_selector = None, node_label_selector = None, field_selector = None, exclude = None):
+    def pod_nodes(self, pod_label_selector = None, node_label_selector = None, pod_field_selector = None, node_field_selector = None, exclude = None):
+        # print(f"pod_label_selector:  + {pod_label_selector} +  node_label_selector:  + {node_label_selector} +  field_selector:  + {field_selector} +  exclude:  + {exclude}")
         pod_nodes = []
         for pod in self.all_pods:
             pod_node = self.pod_node(pod)
 
-            pod_match = self.is_match(pod, label_selector=pod_label_selector, exclude=exclude, field_selector=field_selector)
-            node_match = self.is_match(pod_node, label_selector=node_label_selector, exclude=exclude, field_selector=field_selector)
+            pod_match = self.is_match(pod, label_selector=pod_label_selector, exclude=exclude, field_selector=pod_field_selector)
+            node_match = self.is_match(pod_node, label_selector=node_label_selector, exclude=exclude, field_selector=node_field_selector)
 
-            if pod_match or node_match:    
+            if pod_match and node_match:    
                 pod_nodes.append({'namespace': pod.metadata.namespace, 
                                     'pod_name': self.name(pod), 
                                     'pod_state':  pod.status.phase,
