@@ -52,6 +52,17 @@ kube-system-logging-fluentbit-to-kinesis-fluent-bit-4s852         Pending       
 kiam-agent-cwbn9                                                  Pending             spot                kube-system-exte    ip-10-100-61-19 
 ```
 
+```
+kk get podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:30,pod.spec.containers[0].resources.limits:30'
+
+psqlr-574867588f-wjx95                                            Running             spot                streamtech          ip-10-100-89-25    {'cpu': '100m', 'memory': '128Mi'}     {'cpu': '100m', 'memory': '128Mi'}
+streamtech-pgadmin-dd7899d86-5lwl5                                Running             ondemand            streamtech          ip-10-100-91-19    {'cpu': '500m', 'memory': '512Mi'}     {'cpu': '1', 'memory': '512Mi'}
+commerce-martian-auth0-service-59bdbf9967-85shw                   Running             ondemand            commerce            ip-10-100-83-22    {'cpu': '2', 'memory': '8Gi'}          {'cpu': '6', 'memory': '8Gi'}
+commerce-martian-auth0-service-59bdbf9967-8qd29                   Running             ondemand            commerce            ip-10-100-103-2    {'cpu': '2', 'memory': '8Gi'}          {'cpu': '6', 'memory': '8Gi'}
+
+```
+
+
 ##Installation
 
 install pybuilder `pip3 install pybuilder`
