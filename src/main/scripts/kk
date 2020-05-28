@@ -13,12 +13,16 @@ Options:
     -w           watch mode
 
 Example:
-#    kk get pn \\
-#    -l 'app=streamtech-ibms-service/streamtech-cdn-selection-service' \\
-#    -f 'metadata.namespace=streamtech/content/commerce' \\
-#    -e 'metadata.owner_references[0].kind=DaemonSet' \\
-#    -o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62' \\
-#    -w 
+kk get pn \\
+-l 'app=streamtech-ibms-service/streamtech-cdn-selection-service' \\
+-f 'metadata.namespace=streamtech/content/commerce' \\
+-e 'metadata.owner_references[0].kind=DaemonSet' \\
+-o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62' \\
+-w 
+
+kk get podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:35,pod.spec.containers[0].resources.limits:35,pod.status.container_statuses[0].restart_count' | sort -k3
+kk get podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:30,pod.spec.containers[0].resources.limits:30'
+kk get podnode -f 'metadata.namespace=streamtech/content/commerce'  -e 'metadata.owner_references[0].kind=DaemonSet'   -o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62' -w
 
 """
 
