@@ -8,9 +8,7 @@ k(kubectl)++ ... only better
 
 ```
 (venv) ➜  kk git:(master) ✗ kk -h
-k(kubectl)++ ... only better
-Usage:
-kk get (podnode|pn) [options] 
+kk get (podnode|pn) [options]
 
 Options:
     -h --help    show this
@@ -18,6 +16,8 @@ Options:
     -f STRING    field selector
     -e STRING    exclude
     -o output    pydash format plus padding info, ie. node.metadata.name:62
+    --offline    do not fetch new data, work on the last fetched data
+    --json       print the -o elements in json format
     -w           watch mode
 
 Example:
