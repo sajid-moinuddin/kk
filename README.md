@@ -1,5 +1,5 @@
 # kk
-I am everything kubectl lacks (for sajid)
+k(kubectl)++ ... only better
 
 ----------------------------
 *my python learning by `doing something useful` project
