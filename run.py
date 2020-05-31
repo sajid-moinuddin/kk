@@ -16,6 +16,9 @@ kk = KubeObjects()
 
 kk.refresh(use_cache = True)
 
+
+
+
 # pod_nodes = kk.pod_nodes()
 # for pn in pod_nodes:
 #     # Utils.print_preety(pn, 'pod_name:70', 'app_name:50', 'namespace', 'pod_state', 'node_group', 'node_lifecycle')
@@ -32,11 +35,11 @@ kk.refresh(use_cache = True)
 #     print(_.get(kp, 'status.container_statuses[0].restart_count'))
 #     break
 
-pod_nodes = kk.pod_nodes( pod_label_selector = 'app=streamtech-ibms-service/streamtech-cdn-selection-service', pod_field_selector = 'metadata.namespace=streamtech/content/commerce')
+pod_nodes = kk.pod_nodes(  pod_field_selector = 'metadata.namespace=streamtech/content/commerce')
 
 for pn in pod_nodes:
-    Utils.print_preety(pn,  False, 'pod_name:62', 'node.metadata.labels.lifecycle', 'namespace', 'node.metadata.name:62')
-    print(_.get(pn, 'node.metadata'))
+    Utils.print_dict(pn, 'node.metadata')
+    # print(_.get(pn, 'node.metadata'))
     break
 
 

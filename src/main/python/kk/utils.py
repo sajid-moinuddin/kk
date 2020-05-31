@@ -3,6 +3,9 @@ import logging
 from time import time, ctime
 from os import system, name 
 import pydash as _
+import json
+import jsonpickle
+from json import JSONEncoder
 
 class Utils:
 
@@ -35,6 +38,16 @@ class Utils:
                 vars.append(str(_.get(dict_object,key_name)))
 
         print(pattern.format(*vars))
+
+    @staticmethod
+    def print_dict(dict_object, *argv):
+        if argv: 
+            for a in argv:
+                print(f'--------------------{a}------------------------')
+                print(_.get(dict_object, a))
+        else:
+            print(dict_object)
+
 
     def append_to_logfile(txt):
         f=open("k8s_events.log", "a+")

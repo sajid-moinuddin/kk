@@ -26,5 +26,6 @@ def install_dependencies(project):
     project.depends_on('docopt')
     project.depends_on('kubernetes')
     project.depends_on('pydash')
+    project.depends_on('jsonpickle')
     # project.depends_on('nrql-simple')
     # project.depends_on('text-to-image')
