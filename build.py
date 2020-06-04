@@ -13,7 +13,7 @@ use_plugin("python.unittest")
 use_plugin("python.distutils")
 
 
-name = "kk"
+name = "kubectl-podnode"
 default_task = "publish"
 
 

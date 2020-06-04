@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+
+"""kubectl podnode = kubectl... only better
+Usage:
+kubectl (podnode|pn) [options]
+
+Options:
+    -h --help    show this
+    -l STRING    label selector
+    -f STRING    field selector
+    -e STRING    exclude
+    -o output    pydash format plus padding info, ie. node.metadata.name:62
+    --offline    do not fetch new data, work on the last fetched data
+    --json       print the -o elements in json format
+    -w           watch mode
+
+Example:
+#kubectl podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:35,pod.spec.containers[0].resources.limits:35,pod.status.container_statuses[0].restart_count' | sort -k3
+
+#kubectl podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:30,pod.spec.containers[0].resources.limits:30'
+
+#kubectl podnode -f 'metadata.namespace=streamtech/content/commerce'  -e 'metadata.owner_references[0].kind=DaemonSet'   -o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62' -w
+
+#kubectl podnode -f 'metadata.namespace=streamtech/content/commerce'  -e 'metadata.owner_references[0].kind=DaemonSet'   -o 'pod_name,node.metadata.labels.lifecycle,namespace,node.metadata' --json
+"""
+
+"""
+pyb publish
+pip install .tar.gz
+runMyScript.py
+uninstall
+"""
+
+import logging
+import sys
+import logging
+import time
+from docopt import docopt
+from kk.kube_objects import KubeObjects
+from kk.utils import Utils
+
+
+arguments = docopt(__doc__, version='${version}', help=True)
+
+offline_mode = False
+pod_label_selector = None 
+node_label_selector = None
+field_selector = None
+exclude = None
+output = ['pod_name:62','namespace','pod_state','app_name','node_name:20','node_group','node_lifecycle']
+watch = False
+print_json = False
+
+if arguments['-e']:
+    exclude = arguments['-e']
+
+if arguments['--json']:
+    print_json = True
+
+if arguments['--offline']:
+    offline_mode = True
+
+if arguments['-l']:
+    pod_label_selector = arguments['-l']
+
+if arguments['-f']:
+    field_selector = arguments['-f']
+
+if arguments['-o']:
+    output = arguments['-o'].split(',')
+
+if arguments['-w']:
+    watch = True
+
+kk = KubeObjects()
+
+while True: 
+    kk.refresh(use_cache = offline_mode)
+    pod_nodes =    kk.pod_nodes(pod_label_selector = pod_label_selector,
+                                pod_field_selector = field_selector,
+                                exclude = exclude)
+    Utils.clear()  
+    # Utils.print_preety(None, True, *output) #headers
+
+    for pn in pod_nodes:           
+        if print_json: 
+            Utils.print_dict(pn, *output)
+            print("________________#________________#________________")
+        else:    
+            Utils.print_preety(pn, False, *output)
+    if not watch:
+        break
+    else:
+        time.sleep(5)
+
+# print(arguments)
+# print('-e: ' + exclude)
+# print('-l: ' + pod_label_selector)
