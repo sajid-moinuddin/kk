@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Pass argumnents along to script with full name
+
+kubectl-podnode "${@:1}"
