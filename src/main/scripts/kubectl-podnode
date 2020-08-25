@@ -33,7 +33,18 @@ from docopt import docopt
 from kk.kube_objects import KubeObjects
 from kk.utils import Utils
 
-arguments = docopt(__doc__.format(sys.argv[0]), version='${version}', help=True)
+def print_friendly_usage_and_exit(exit_code=0):
+    print(__doc__.format("kubectl (podnode|pn)"))
+    sys.exit(exit_code)
+
+try:
+    arguments = docopt(__doc__.format(sys.argv[0]), version='${version}', help=False)
+except BaseException as exc:
+    print_friendly_usage_and_exit(1)
+
+if arguments.get('--help'):
+    print_friendly_usage_and_exit()
+
 
 offline_mode = False
 pod_label_selector = None 
