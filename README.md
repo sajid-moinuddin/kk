@@ -7,8 +7,8 @@ k(kubectl)++ ... only better
 (the basic concept here is joining the node data with the pod data (podnode object = {'pod': object, 'node': object}) and then searching / formatting output of the joined columns)
 
 ```
-(venv) ➜  kk git:(master) ✗ kk -h
-kk get (podnode|pn) [options]
+(venv) ➜  kk git:(master) ✗ kubectl pn -h
+kubectl (podnode|pn) [options]
 
 Options:
     -h --help    show this
@@ -21,7 +21,7 @@ Options:
     -w           watch mode
 
 Example:
-#    kk get pn \
+#    kubectl podnode \
 #    -l 'app=streamtech-ibms-service/streamtech-cdn-selection-service' \
 #    -f 'metadata.namespace=streamtech/content/commerce' \
 #    -e 'metadata.owner_references[0].kind=DaemonSet' \
@@ -30,14 +30,14 @@ Example:
 ```
 
 ```
-kk get podnode -f 'metadata.namespace=streamtech/content/commerce'  \
+kubectl podnode -f 'metadata.namespace=streamtech/content/commerce'  \
    -e 'metadata.owner_references[0].kind=DaemonSet'   \
    -o 'pod_name:62,node.metadata.labels.lifecycle,namespace,node.metadata.name:62' \
    -w
 ```   
 
 ```
-kk get pn  \
+kubectl podnode  \
     -l 'app=streamtech-ibms-service'   \
     -f 'metadata.namespace=streamtech/content/commerce'   \
     -e 'metadata.owner_references[0].kind=DaemonSet'   \
@@ -46,7 +46,7 @@ kk get pn  \
 ```
 
 ```
-kk get pn  -e 'status.phase=Running/Succeeded'     -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15' -w 
+kubectl podnode  -e 'status.phase=Running/Succeeded'     -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15' -w 
 
 stable-k8s-spot-termination-handler-6g27r                         Pending             spot                kube-system-exte    ip-10-100-61-19    
 overprovisioner-pause-pod-857cb47476-kml8r                        Pending             spot                overprovisioner     ip-10-100-61-19    
@@ -55,7 +55,7 @@ kiam-agent-cwbn9                                                  Pending       
 ```
 
 ```
-kk get podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:30,pod.spec.containers[0].resources.limits:30'
+kubectl podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:30,pod.spec.containers[0].resources.limits:30'
 
 psqlr-574867588f-wjx95                                            Running             spot                streamtech          ip-10-100-89-25    {'cpu': '100m', 'memory': '128Mi'}     {'cpu': '100m', 'memory': '128Mi'}
 streamtech-pgadmin-dd7899d86-5lwl5                                Running             ondemand            streamtech          ip-10-100-91-19    {'cpu': '500m', 'memory': '512Mi'}     {'cpu': '1', 'memory': '512Mi'}
@@ -65,7 +65,7 @@ commerce-martian-auth0-service-59bdbf9967-8qd29                   Running       
 ```
 
 ```
-kk get podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:35,pod.spec.containers[0].resources.limits:35,pod.status.container_statuses[0].restart_count' | sort -k3
+kubectl podnode -f 'metadata.namespace=streamtech/content/commerce' -e 'metadata.owner_references[0].kind=DaemonSet' -o 'pod_name:62,pod.status.phase,node.metadata.labels.lifecycle,namespace,node.metadata.name:15,pod.spec.containers[0].resources.requests:35,pod.spec.containers[0].resources.limits:35,pod.status.container_statuses[0].restart_count' | sort -k3
 ```
 
 
