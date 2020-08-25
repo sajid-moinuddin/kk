@@ -2,7 +2,7 @@
 
 """kubectl podnode = kubectl... only better
 Usage:
-kubectl (podnode|pn) [options]
+{0} [options]
 
 Options:
     -h --help    show this
@@ -24,12 +24,6 @@ Example:
 #kubectl podnode -f 'metadata.namespace=streamtech/content/commerce'  -e 'metadata.owner_references[0].kind=DaemonSet'   -o 'pod_name,node.metadata.labels.lifecycle,namespace,node.metadata' --json
 """
 
-"""
-pyb publish
-pip install .tar.gz
-runMyScript.py
-uninstall
-"""
 
 import logging
 import sys
@@ -39,8 +33,18 @@ from docopt import docopt
 from kk.kube_objects import KubeObjects
 from kk.utils import Utils
 
+def print_friendly_usage_and_exit(exit_code=0):
+    print(__doc__.format("kubectl (podnode|pn)"))
+    sys.exit(exit_code)
 
-arguments = docopt(__doc__, version='${version}', help=True)
+try:
+    arguments = docopt(__doc__.format(sys.argv[0]), version='${version}', help=False)
+except BaseException as exc:
+    print_friendly_usage_and_exit(1)
+
+if arguments.get('--help'):
+    print_friendly_usage_and_exit()
+
 
 offline_mode = False
 pod_label_selector = None 
@@ -51,25 +55,25 @@ output = ['pod_name:62','namespace','pod_state','app_name','node_name:20','node_
 watch = False
 print_json = False
 
-if arguments['-e']:
-    exclude = arguments['-e']
+if arguments.get('-e'):
+    exclude = arguments.get('-e')
 
-if arguments['--json']:
+if arguments.get('--json'):
     print_json = True
 
-if arguments['--offline']:
+if arguments.get('--offline'):
     offline_mode = True
 
-if arguments['-l']:
-    pod_label_selector = arguments['-l']
+if arguments.get('-l'):
+    pod_label_selector = arguments.get('-l')
 
-if arguments['-f']:
-    field_selector = arguments['-f']
+if arguments.get('-f'):
+    field_selector = arguments.get('-f')
 
-if arguments['-o']:
-    output = arguments['-o'].split(',')
+if arguments.get('-o'):
+    output = arguments.get('-o').split(',')
 
-if arguments['-w']:
+if arguments.get('-w'):
     watch = True
 
 kk = KubeObjects()
