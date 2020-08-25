@@ -2,7 +2,7 @@
 
 """kubectl podnode = kubectl... only better
 Usage:
-kubectl (podnode|pn) [options]
+{0} [options]
 
 Options:
     -h --help    show this
@@ -24,12 +24,6 @@ Example:
 #kubectl podnode -f 'metadata.namespace=streamtech/content/commerce'  -e 'metadata.owner_references[0].kind=DaemonSet'   -o 'pod_name,node.metadata.labels.lifecycle,namespace,node.metadata' --json
 """
 
-"""
-pyb publish
-pip install .tar.gz
-runMyScript.py
-uninstall
-"""
 
 import logging
 import sys
@@ -39,7 +33,7 @@ from docopt import docopt
 from kk.kube_objects import KubeObjects
 from kk.utils import Utils
 
-arguments = docopt(__doc__, version='${version}', help=False)
+arguments = docopt(__doc__.format(sys.argv[0]), version='${version}', help=True)
 
 offline_mode = False
 pod_label_selector = None 
